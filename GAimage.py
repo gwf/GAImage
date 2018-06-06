@@ -4,7 +4,7 @@ import math, random
 width = 100
 height = 100
 radius = max(width, height) / 2
-popSize = 10
+popSize = 100
 geneLen = 50
 population = None
 running = True
@@ -16,7 +16,7 @@ def init_graphics():
     pygame.init()
     pygame.display.set_caption("GAimage")
     canvas = pygame.display.set_mode((width, height))
-    canvas.fill((0, 0, 0,255))
+    canvas.fill((0, 0, 0, 255))
 
 ################################################################################
 
@@ -33,7 +33,7 @@ def init_target():
     image = pygame.transform.smoothscale(image, (nw, nh))
     xoff = math.floor((width - nw) / 2)
     yoff = math.floor((height - nh) / 2)
-    target = pygame.Surface((width, height))
+    target = pygame.Surface((width, height)).convert()
     target.fill((0, 0, 0,255))
     target.blit(image, (xoff, yoff))
 
@@ -46,7 +46,7 @@ def random_circle():
 
 def init_population():
     global population
-    random.seed(0)    
+    #random.seed(0)    
     population = []
     for i in range(popSize):
         genes = []
@@ -105,18 +105,24 @@ def compute_population_fitness():
         img = render_image(i)
         score = compute_image_fitness(img)
         scores.append((score, i))
-    scores.sort(reverse=True)
+    scores.sort()
     return scores        
+
+################################################################################
+
+def evolve_population(scores):
+    exit(0)
 
 ################################################################################
 
 def main():
     init()
-    scores = compute_population_fitness()
-    print(scores)
-
     global running
     while running:
+        scores = compute_population_fitness()
+        canvas.blit(render_image(scores[0][1]), (0,0))
+        evolve_population(scores)
+        #
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
